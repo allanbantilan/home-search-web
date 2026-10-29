@@ -2,6 +2,20 @@
 
 Home Search is a WordPress real estate site with property search, an interactive map, agent profiles, and lead routing. The custom theme handles presentation; the Estate Search plugin owns listings, agents, fields, search, and enquiries so content remains available if the theme changes.
 
+## WordPress tech stack
+
+| Layer | Technology |
+| --- | --- |
+| CMS and runtime | WordPress and PHP; local Docker uses the `wordpress:php8.2-apache` image |
+| Database | MariaDB 11.4 in the local Docker stack; WordPress also supports a compatible MySQL or MariaDB server in production |
+| Theme | Custom `property-search` theme built with PHP templates, CSS, and vanilla JavaScript; no frontend framework or build step |
+| Site plugin | Custom `estate-search` plugin for property and agent post types, property taxonomy, search endpoint, and enquiry handlers |
+| Content fields | Advanced Custom Fields (free) for property and agent editing screens |
+| Search | WordPress REST API and `WP_Query`, with server-rendered listings and pagination as a fallback |
+| Maps | Leaflet 1.9.4; the current theme uses OpenStreetMap tiles |
+| Email | WordPress `wp_mail()`; FluentSMTP with Brevo is the selected production sending setup and requires a verified sender and API key |
+| Local verification | Docker Compose, WP-CLI, Python Playwright, Node.js tests, and Lighthouse |
+
 ## Features
 
 - Filter properties by location, price, bedrooms, and type. Results update through a WordPress REST endpoint, with server rendered results and pagination available without JavaScript.
