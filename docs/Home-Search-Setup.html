@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home Search — Setup and VPS readiness</title>
+<style>
+  @page { size: A4; margin: 18mm 17mm 17mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #17372f; background: #fff; font: 10.5pt/1.47 Arial, sans-serif; }
+  h1, h2, h3 { font-family: Georgia, serif; line-height: 1.16; margin: 0 0 9pt; }
+  h1 { font-size: 36pt; letter-spacing: -.03em; }
+  h2 { font-size: 21pt; padding-top: 4pt; }
+  h3 { font-size: 12.5pt; margin-top: 14pt; }
+  p, li { margin: 0 0 7pt; }
+  ol, ul { padding-left: 18pt; margin: 6pt 0 12pt; }
+  li { padding-left: 2pt; }
+  a { color: #a7442b; text-decoration: none; }
+  code { font: 9pt/1.4 Consolas, monospace; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #ecf1ec; padding: 11pt; border-radius: 5pt; margin: 8pt 0 13pt; }
+  .cover { min-height: 247mm; display: flex; flex-direction: column; justify-content: space-between; padding: 13mm 0 6mm; }
+  .brand { font-family: Georgia, serif; font-weight: bold; font-size: 16pt; }
+  .kicker { color: #b34b2d; font-size: 9pt; text-transform: uppercase; letter-spacing: .18em; font-weight: bold; }
+  .lead { font-family: Georgia, serif; font-size: 17pt; line-height: 1.33; max-width: 130mm; margin-top: 15pt; }
+  .band { height: 6mm; background: #17372f; margin: 12mm 0; }
+  .muted { color: #526860; }
+  .small { font-size: 8.5pt; }
+  .page { break-before: page; }
+  .callout { background: #ecf1ec; border-left: 4pt solid #b34b2d; padding: 10pt 12pt; margin: 12pt 0; }
+  .status { font-weight: bold; color: #a7442b; }
+  table { width: 100%; border-collapse: collapse; margin: 8pt 0 14pt; }
+  th, td { border-bottom: 1px solid #d3ded6; padding: 7pt 5pt; text-align: left; vertical-align: top; }
+  th { width: 29%; color: #17372f; }
+  .check { color: #247452; font-weight: bold; }
+  .foot { border-top: 1px solid #d3ded6; padding-top: 8pt; font-size: 8pt; color: #526860; }
+</style>
+</head>
+<body>
+<section class="cover">
+  <div class="brand">◯ Home Search</div>
+  <div>
+    <p class="kicker">WordPress portfolio · Setup guide</p>
+    <h1>From local demo<br>to launch-ready site.</h1>
+    <div class="band"></div>
+    <p class="lead">A practical guide to install, test, fill, and deploy the Home Search real estate site.</p>
+  </div>
+  <div>
+    <p><strong>Current assessment:</strong> <span class="status">Locally tested; VPS launch has prerequisites.</span></p>
+    <p class="muted">Prepared 29 October 2026 · Generic portfolio demonstration</p>
+  </div>
+</section>
+
+<section class="page">
+  <p class="kicker">01 · Local setup</p>
+  <h2>Run the WordPress demo</h2>
+  <p>Requirements: Docker Desktop running on Windows, PowerShell 7, and an unused localhost port. Open a terminal in the project folder:</p>
+  <pre><code>cd C:\projects\wp-web\real-estate-smart-search
+pwsh -NoProfile -File .\setup-local.ps1 -SeedDemo</code></pre>
+  <p>Open <strong>http://127.0.0.1:57106/</strong>. The script prints a randomly generated admin password on the first install; save it privately. The admin dashboard is at <strong>/wp-admin/</strong>. If port 57106 is busy, choose another port and project name:</p>
+  <pre><code>pwsh -NoProfile -File .\setup-local.ps1 -Port 57107 `
+  -Project home-search-demo-2 -SeedDemo</code></pre>
+  <p>The script is safe to rerun: it keeps the Docker volumes and existing content. It starts MariaDB and WordPress, installs the WordPress database if needed, installs ACF, activates the Estate Search plugin and Home Search theme, enables pretty permalinks, and optionally seeds three listings and one agent. The theme creates Contact, Compare, and Saved Homes pages when activated.</p>
+  <div class="callout"><strong>Local use only.</strong> The <code>.docker-test/compose.yml</code> file contains example database passwords and a mail-capture plugin. It is deliberately bound to <code>127.0.0.1</code>. Do not copy it to a public VPS.</div>
+  <h3>Verify the installation</h3>
+  <pre><code>node tests/site.test.cjs
+node --check property-search/assets/js/site.js
+python tests/integration.py http://127.0.0.1:57106
+python tests/browser.py http://127.0.0.1:57106</code></pre>
+  <p class="small">Browser checks require Python Playwright and a local Chrome installation. The integration test sends sample contact and viewing requests; the local mail-capture plugin prevents external delivery.</p>
+  <p class="foot">To stop the demo without deleting data: <code>docker compose -p home-search-local -f .docker-test/compose.yml down</code>. Never add <code>-v</code> unless you intend to erase its database and uploads.</p>
+</section>
+
+<section class="page">
+  <p class="kicker">02 · WordPress content</p>
+  <h2>Configure the real site</h2>
+  <ol>
+    <li><strong>Install the two project folders.</strong> Copy <code>estate-search</code> to <code>wp-content/plugins/</code> and <code>property-search</code> to <code>wp-content/themes/</code>. Activate Estate Search, install and activate Advanced Custom Fields, then activate the Home Search theme.</li>
+    <li><strong>Set permalinks.</strong> In Settings → Permalinks, choose “Post name” and save. Confirm <code>/properties/</code> and <code>/agents/</code> work.</li>
+    <li><strong>Create agents first.</strong> Add each agent under Agents with a valid email, role, phone, biography, and portrait. Viewing requests use the assigned agent’s email.</li>
+    <li><strong>Add properties.</strong> Include title, description, price, location, address, bedrooms, bathrooms, area, property type, coordinates, featured photo, and assigned agent. Use a WordPress Gallery block in the description for additional images.</li>
+    <li><strong>Set office contact details.</strong> The general contact form sends to the WordPress administration email in Settings → General. Replace demo people, addresses, and <code>example.test</code> emails before publication.</li>
+    <li><strong>Configure mail.</strong> Install FluentSMTP, connect a verified sending domain and mail provider, then send a test email. Submit both the contact form and a property viewing request and confirm the office and assigned agent receive them.</li>
+  </ol>
+  <h3>Plugin choices</h3>
+  <table>
+    <tr><th>Required</th><td><a href="https://wordpress.org/plugins/advanced-custom-fields/">Advanced Custom Fields</a> — edits property and agent fields registered by Estate Search.</td></tr>
+    <tr><th>Recommended</th><td><a href="https://wordpress.org/plugins/fluent-smtp/">FluentSMTP</a> — authenticated delivery for <code>wp_mail()</code>. Configure one mail plugin only.</td></tr>
+    <tr><th>Optional</th><td><a href="https://wordpress.org/plugins/fluentform/">Fluent Forms</a> only if office staff must change form fields or notification rules. The included forms already route leads.</td></tr>
+  </table>
+  <p class="foot">The payment calculator estimates principal and interest only. It excludes insurance, taxes, fees, and lender adjustments. Favorites and comparisons are stored in each visitor’s browser.</p>
+</section>
+
+<section class="page">
+  <p class="kicker">03 · VPS launch</p>
+  <h2>Deployment sequence</h2>
+  <p>Use a maintained WordPress host stack on the VPS: a supported WordPress/PHP release, MariaDB or MySQL, persistent database and uploads, and an HTTPS reverse proxy. The local Docker Compose file is a test fixture, not a production manifest.</p>
+  <ol>
+    <li><strong>Prepare infrastructure.</strong> Point the domain’s DNS to the VPS. Apply operating-system updates, restrict SSH, and allow only required public ports. Keep the database inaccessible from the public internet.</li>
+    <li><strong>Install WordPress with HTTPS.</strong> Configure the site URL as <code>https://your-domain.example</code>, issue and renew a TLS certificate, and check secure admin login and pretty permalinks. Use strong, unique database and administrator credentials.</li>
+    <li><strong>Install this project.</strong> Add the two folders and the required ACF plugin as described on page 3. Import production property content and media; do not publish the local sample agent or test addresses.</li>
+    <li><strong>Enable delivery.</strong> Configure FluentSMTP with the real sender domain, SPF/DKIM/DMARC where supported, and verify delivery to both office and agent inboxes. The local mail-capture plugin must not be present.</li>
+    <li><strong>Set map service.</strong> The theme uses Leaflet with public OpenStreetMap tiles. Review the <a href="https://operations.osmfoundation.org/policies/tiles/">tile usage policy</a>; use a dedicated tile provider when traffic or service needs exceed it.</li>
+    <li><strong>Protect and operate.</strong> Schedule offsite backups of the database and uploaded media, test a restore, keep WordPress/plugins/PHP updated, monitor errors and disk space, and publish an appropriate privacy notice for enquiry data.</li>
+  </ol>
+  <div class="callout"><strong>VPS verdict:</strong> The theme and plugin passed local functional tests and can be installed on a VPS. A public launch is <strong>not ready</strong> until HTTPS, real mail delivery, backups with a tested restore, production content, and live-server checks are complete.</div>
+  <p class="foot">A VPS was not supplied for this review, so no DNS, TLS, mail provider, firewall, backup restore, or production load test was performed.</p>
+</section>
+
+<section class="page">
+  <p class="kicker">04 · Acceptance</p>
+  <h2>What was tested</h2>
+  <table>
+    <tr><th>Fresh Docker setup</th><td class="check">Pass — WordPress, ACF, companion plugin, theme, permalinks, demo content, and featured image.</td></tr>
+    <tr><th>Core pages</th><td class="check">Pass — home, property search, property detail, agents, compare, saved homes, and contact.</td></tr>
+    <tr><th>Search and map</th><td class="check">Pass — live filters, REST response, invalid range handling, map marker.</td></tr>
+    <tr><th>Visitor actions</th><td class="check">Pass — favorites, compare, payment estimate, contact and viewing forms, invalid nonce rejection.</td></tr>
+    <tr><th>Chrome review</th><td class="check">Pass — homepage rendered with no console errors; desktop and mobile checked.</td></tr>
+  </table>
+  <h3>Final launch gate</h3>
+  <ul>
+    <li>Confirm the public domain, HTTPS certificate, and admin login.</li>
+    <li>Verify real email delivery to the office and at least two assigned agents.</li>
+    <li>Run a backup and restore it to a separate test instance.</li>
+    <li>Check mobile and desktop pages, broken links, map tiles, and browser console on the public URL.</li>
+    <li>Review production photos, prices, agent details, legal copy, privacy notice, and calculator disclaimer.</li>
+  </ul>
+  <h3>Primary references</h3>
+  <p class="small"><a href="https://developer.wordpress.org/advanced-administration/security/hardening/">WordPress hardening</a> · <a href="https://developer.wordpress.org/advanced-administration/security/backup/">WordPress backups</a> · <a href="https://hub.docker.com/_/wordpress">Official WordPress Docker image</a> · <a href="https://developer.wordpress.org/cli/commands/core/install/">WP-CLI installation</a> · <a href="https://operations.osmfoundation.org/policies/tiles/">OpenStreetMap tile policy</a></p>
+  <p class="foot">Home Search is a generic portfolio demonstration. This guide records local evidence and the remaining work for a real deployment.</p>
+</section>
+</body>
+</html>
