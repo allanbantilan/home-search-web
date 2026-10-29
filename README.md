@@ -2,6 +2,16 @@
 
 Home Search is a WordPress real estate site with property search, an interactive map, agent profiles, and lead routing. The custom theme handles presentation; the Estate Search plugin owns listings, agents, fields, search, and enquiries so content remains available if the theme changes.
 
+## Screenshots
+
+Screenshots show the included sample listings.
+
+![Home Search desktop homepage with property search](docs/screenshots/home-desktop.jpg)
+
+| Property search and map | Property details | Mobile homepage |
+| --- | --- | --- |
+| <img src="docs/screenshots/property-search.jpg" alt="Property filters, listing cards, and interactive map" width="400"> | <img src="docs/screenshots/property-detail.jpg" alt="Property photo, price, and viewing request" width="400"> | <img src="docs/screenshots/home-mobile.jpg" alt="Mobile homepage with search form" width="220"> |
+
 ## WordPress tech stack
 
 | Layer | Technology |
