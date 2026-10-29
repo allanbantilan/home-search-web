@@ -19,6 +19,7 @@ Home Search is a WordPress real estate site with property search, an interactive
 | [`setup-local.ps1`](setup-local.ps1) | Repeatable local WordPress setup |
 | [`tests/`](tests/) | Integration, browser, and calculator checks |
 | [`docs/Home-Search-Setup.pdf`](docs/Home-Search-Setup.pdf) | Installation and VPS setup guide |
+| [`.agents/skills/ui-ux-pro-max/`](.agents/skills/ui-ux-pro-max/) | UI UX Pro Max guidance and local design search tools |
 
 ## Local setup
 
@@ -68,7 +69,7 @@ python tests/browser.py http://127.0.0.1:57106
 
 The browser check requires Python Playwright and Chrome at the standard Windows installation path. The integration test uses the sample listings created by `-SeedDemo`; its email requests are captured by the local test plugin.
 
-The local mobile Lighthouse report recorded **93 performance** and **100 accessibility, best practices, and SEO**. A later Chrome MCP audit recorded **100 accessibility, best practices, and SEO** with no failed checks. See the [Lighthouse report](.docker-test/lighthouse-home.json), [Chrome audit](.docker-test/chrome-lighthouse.json), [desktop screenshot](.docker-test/homepage-browser.png), and [mobile screenshot](.docker-test/mobile-browser.png). These are local measurements.
+The current local mobile Lighthouse report recorded **88 performance** and **100 accessibility, best practices, and SEO**. A Chrome MCP audit recorded **100 accessibility, best practices, SEO, and agentic browsing** with no failed checks. See the [Lighthouse report](.docker-test/lighthouse-home.json), [Chrome audit](.docker-test/chrome-lighthouse.json), [desktop screenshot](.docker-test/homepage-browser.png), and [mobile screenshot](.docker-test/mobile-browser.png). These are local measurements.
 
 ## Production deployment
 

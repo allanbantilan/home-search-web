@@ -10,14 +10,19 @@ if (!$agent) {
 $type = term_exists('House', 'property_type');
 if (!$type) { $type = wp_insert_term('House', 'property_type'); }
 $properties = [
-    ['Makati Garden Residence', 18000000, 'Makati', 3, 2, 210, 14.5547, 121.0244],
-    ['Tagaytay Hillside Retreat', 12000000, 'Tagaytay', 2, 2, 165, 14.1153, 120.9621],
-    ['Cebu City Modern Loft', 8000000, 'Cebu City', 2, 1, 95, 10.3157, 123.8854],
+    ['Makati Garden Residence', 18000000, 'Makati', 3, 2, 210, 14.5547, 121.0244, 'Indoor-outdoor living, generous entertaining space, and a setting designed for warm days at home.'],
+    ['Tagaytay Hillside Retreat', 12000000, 'Tagaytay', 2, 2, 165, 14.1153, 120.9621, 'A light-filled hillside retreat with open living spaces and a broad view of the surrounding landscape.'],
+    ['Cebu City Modern Loft', 8000000, 'Cebu City', 2, 1, 95, 10.3157, 123.8854, 'A contemporary loft with open-plan living, generous daylight, and city views.'],
 ];
-foreach ($properties as [$title, $price, $location, $beds, $baths, $area, $lat, $lng]) {
+foreach ($properties as [$title, $price, $location, $beds, $baths, $area, $lat, $lng, $description]) {
     $existing = get_page_by_title($title, OBJECT, 'property');
-    if ($existing) { continue; }
-    $id = wp_insert_post(['post_type' => 'property', 'post_status' => 'publish', 'post_title' => $title, 'post_content' => 'A considered home with comfortable living spaces and a convenient setting.']);
+    if ($existing) {
+        if ($existing->post_content === 'A considered home with comfortable living spaces and a convenient setting.') {
+            wp_update_post(['ID' => $existing->ID, 'post_content' => $description]);
+        }
+        continue;
+    }
+    $id = wp_insert_post(['post_type' => 'property', 'post_status' => 'publish', 'post_title' => $title, 'post_content' => $description]);
     foreach (['price' => $price, 'location' => $location, 'bedrooms' => $beds, 'bathrooms' => $baths, 'area' => $area, 'latitude' => $lat, 'longitude' => $lng, 'agent' => $agent_id, 'featured' => 1] as $key => $value) {
         update_post_meta($id, $key, $value);
     }

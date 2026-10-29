@@ -4,7 +4,7 @@
 <header class="site-header"><div class="wrap header-inner">
 <a class="brand" href="<?php echo esc_url(home_url('/')); ?>"><span class="brand-mark" aria-hidden="true"></span><span>Home Search</span></a>
 <nav class="main-nav" id="site-nav" aria-label="Primary navigation">
-<a href="<?php echo esc_url(home_url('/')); ?>">Home</a><a href="<?php echo esc_url(home_search_archive_url()); ?>">Properties</a><a href="<?php echo esc_url(get_post_type_archive_link('agent')); ?>">Our agents</a><a href="<?php echo esc_url(home_search_contact_url()); ?>">Contact</a>
+<a href="<?php echo esc_url(home_url('/')); ?>">Home</a><a href="<?php echo esc_url(home_search_archive_url()); ?>">Properties</a><a href="<?php echo esc_url(get_post_type_archive_link('agent')); ?>">Our agents</a><a href="<?php echo esc_url(home_search_contact_url()); ?>">Contact</a><a class="mobile-nav-link" href="<?php echo esc_url(home_url('/favorites/')); ?>">Saved homes <span data-favorite-count>0</span></a><a class="mobile-nav-link" href="<?php echo esc_url(home_search_compare_url()); ?>">Compare homes <span data-compare-count>0</span></a>
 </nav>
 <div class="header-actions"><a class="count-link" href="<?php echo esc_url(home_url('/favorites/')); ?>">Saved <span data-favorite-count>0</span></a><a class="count-link" href="<?php echo esc_url(home_search_compare_url()); ?>">Compare <span data-compare-count>0</span></a><a class="button button-small" href="<?php echo esc_url(home_search_contact_url()); ?>">Let's talk <span aria-hidden="true">↗</span></a><button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu">☰</button></div>
 </div></header><main id="content">

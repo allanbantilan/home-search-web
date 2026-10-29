@@ -45,10 +45,17 @@ Invoke-Wp @('option', 'update', 'siteurl', "http://127.0.0.1:$Port")
 
 if ($SeedDemo) {
     Invoke-Wp @('eval-file', '/home-search-test/setup.php')
-    $featuredId = & docker @dockerArgs run --rm -T cli wp post list --post_type=property --name=makati-garden-residence --field=ID
-    if ($LASTEXITCODE -ne 0 -or !$featuredId) { throw 'Demo property was not created.' }
-    $thumbnailId = & docker @dockerArgs run --rm -T cli wp post meta get $featuredId _thumbnail_id
-    if (!$thumbnailId) { Invoke-Wp @('media', 'import', '/var/www/html/wp-content/themes/property-search/assets/images/hero.webp', "--post_id=$featuredId", '--featured_image') }
+    $photos = @(
+        @{ Slug = 'makati-garden-residence'; File = '/var/www/html/wp-content/themes/property-search/assets/images/hero.webp' },
+        @{ Slug = 'tagaytay-hillside-retreat'; File = '/home-search-test/images/tagaytay-hillside.webp' },
+        @{ Slug = 'cebu-city-modern-loft'; File = '/home-search-test/images/cebu-city-loft.webp' }
+    )
+    foreach ($photo in $photos) {
+        $propertyId = & docker @dockerArgs run --rm -T cli wp post list --post_type=property "--name=$($photo.Slug)" --field=ID
+        if ($LASTEXITCODE -ne 0 -or !$propertyId) { throw "Sample property $($photo.Slug) was not created." }
+        $thumbnailId = & docker @dockerArgs run --rm -T cli wp post meta get $propertyId _thumbnail_id
+        if (!$thumbnailId) { Invoke-Wp @('media', 'import', $photo.File, "--post_id=$propertyId", '--featured_image') }
+    }
 }
 
 Write-Host "Home Search is ready at http://127.0.0.1:$Port/"

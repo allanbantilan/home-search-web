@@ -37,6 +37,7 @@ add_action('pre_get_posts', function ($query) {
 });
 
 function home_search_money($amount) { return '₱' . number_format((float) $amount); }
+function home_search_agent_initial($name) { preg_match('/\p{L}/u', (string) $name, $match); return $match[0] ?? 'H'; }
 function home_search_query_value($name) {
     $value = $_GET[$name] ?? '';
     return is_scalar($value) ? wp_unslash((string) $value) : '';

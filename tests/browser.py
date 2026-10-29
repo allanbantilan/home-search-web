@@ -16,10 +16,22 @@ with sync_playwright() as playwright:
 
     mobile = browser.new_page(viewport={"width": 390, "height": 844}, is_mobile=True, device_scale_factor=1)
     mobile.goto(base + "/", wait_until="domcontentloaded")
+    mobile.evaluate("async () => await Promise.all([...document.images].map(image => { image.loading = 'eager'; return image.decode().catch(() => {}); }))")
     width = mobile.evaluate("({viewport: innerWidth, page: document.documentElement.scrollWidth})")
     print("Mobile widths:", width)
     mobile.screenshot(path=str(out / "mobile-browser.png"), full_page=True)
     assert width["page"] <= width["viewport"], "Mobile page overflows horizontally"
+    mobile.locator('.menu-toggle').click()
+    assert mobile.get_by_role('navigation', name='Primary navigation').get_by_role('link', name='Saved homes 0').is_visible()
+    assert mobile.get_by_role('navigation', name='Primary navigation').get_by_role('link', name='Compare homes 0').is_visible()
+    print('PASS mobile navigation')
+    mobile.set_viewport_size({"width": 320, "height": 750})
+    assert mobile.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+    tablet = browser.new_page(viewport={"width": 768, "height": 900})
+    tablet.goto(base + "/", wait_until="domcontentloaded")
+    assert tablet.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+    assert tablet.locator('.menu-toggle').is_visible()
+    print('PASS narrow and tablet widths')
 
     desktop.goto(base + "/properties/", wait_until="domcontentloaded")
     desktop.locator("#filter-location").fill("Makati")
@@ -32,14 +44,14 @@ with sync_playwright() as playwright:
     print("PASS map marker")
 
     desktop.locator("[data-favorite]").first.click()
-    assert desktop.locator("[data-favorite-count]").inner_text() == "1"
+    assert desktop.locator("[data-favorite-count]").first.inner_text() == "1"
     desktop.goto(base + "/favorites/", wait_until="domcontentloaded")
     desktop.locator("#favorites-content .property-card").first.wait_for(timeout=10000)
     print("PASS saved home")
 
     desktop.goto(base + "/properties/", wait_until="domcontentloaded")
     desktop.locator("[data-compare]").first.check()
-    assert desktop.locator("[data-compare-count]").inner_text() == "1"
+    assert desktop.locator("[data-compare-count]").first.inner_text() == "1"
     desktop.goto(base + "/compare/", wait_until="domcontentloaded")
     desktop.locator(".compare-table").wait_for(timeout=10000)
     print("PASS compare")
