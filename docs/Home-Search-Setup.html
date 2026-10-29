@@ -38,26 +38,26 @@
 <section class="cover">
   <div class="brand">◯ Home Search</div>
   <div>
-    <p class="kicker">WordPress portfolio · Setup guide</p>
-    <h1>From local demo<br>to launch-ready site.</h1>
+    <p class="kicker">WordPress · Setup guide</p>
+    <h1>From local setup<br>to launch-ready site.</h1>
     <div class="band"></div>
     <p class="lead">A practical guide to install, test, fill, and deploy the Home Search real estate site.</p>
   </div>
   <div>
     <p><strong>Current assessment:</strong> <span class="status">Locally tested; VPS launch has prerequisites.</span></p>
-    <p class="muted">Prepared 29 October 2026 · Generic portfolio demonstration</p>
+    <p class="muted">Prepared 29 October 2026 · Home Search deployment documentation</p>
   </div>
 </section>
 
 <section class="page">
   <p class="kicker">01 · Local setup</p>
-  <h2>Run the WordPress demo</h2>
+  <h2>Run the local WordPress site</h2>
   <p>Requirements: Docker Desktop running on Windows, PowerShell 7, and an unused localhost port. Open a terminal in the project folder:</p>
   <pre><code>cd C:\projects\wp-web\real-estate-smart-search
 pwsh -NoProfile -File .\setup-local.ps1 -SeedDemo</code></pre>
   <p>Open <strong>http://127.0.0.1:57106/</strong>. The script prints a randomly generated admin password on the first install; save it privately. The admin dashboard is at <strong>/wp-admin/</strong>. If port 57106 is busy, choose another port and project name:</p>
   <pre><code>pwsh -NoProfile -File .\setup-local.ps1 -Port 57107 `
-  -Project home-search-demo-2 -SeedDemo</code></pre>
+  -Project home-search-local-2 -SeedDemo</code></pre>
   <p>The script is safe to rerun: it keeps the Docker volumes and existing content. It starts MariaDB and WordPress, installs the WordPress database if needed, installs ACF, activates the Estate Search plugin and Home Search theme, enables pretty permalinks, and optionally seeds three listings and one agent. The theme creates Contact, Compare, and Saved Homes pages when activated.</p>
   <div class="callout"><strong>Local use only.</strong> The <code>.docker-test/compose.yml</code> file contains example database passwords and a mail-capture plugin. It is deliberately bound to <code>127.0.0.1</code>. Do not copy it to a public VPS.</div>
   <h3>Verify the installation</h3>
@@ -125,7 +125,7 @@ python tests/browser.py http://127.0.0.1:57106</code></pre>
   </ul>
   <h3>Primary references</h3>
   <p class="small"><a href="https://developer.wordpress.org/advanced-administration/security/hardening/">WordPress hardening</a> · <a href="https://developer.wordpress.org/advanced-administration/security/backup/">WordPress backups</a> · <a href="https://hub.docker.com/_/wordpress">Official WordPress Docker image</a> · <a href="https://developer.wordpress.org/cli/commands/core/install/">WP-CLI installation</a> · <a href="https://operations.osmfoundation.org/policies/tiles/">OpenStreetMap tile policy</a></p>
-  <p class="foot">Home Search is a generic portfolio demonstration. This guide records local evidence and the remaining work for a real deployment.</p>
+  <p class="foot">This guide records local test evidence and the remaining work for a public deployment.</p>
 </section>
 </body>
 </html>
