@@ -2,6 +2,15 @@
 
 Home Search is a WordPress real estate site with property search, an interactive map, agent profiles, and lead routing. The custom theme handles presentation; the Estate Search plugin owns listings, agents, fields, search, and enquiries so content remains available if the theme changes.
 
+## App flow
+
+1. Staff create agents and property listings in WordPress. The Estate Search plugin stores their fields and serves search results.
+2. Visitors filter listings, switch to the map, and open property details. Saved homes and comparisons stay in the visitor's browser.
+3. A viewing request is routed to the listing's assigned agent; a general enquiry goes to the WordPress administration address through FluentSMTP and Brevo.
+4. Staff reply and arrange viewings outside the site. The live site currently has no real property listings, so search shows its empty state until content is added.
+
+The live site is [home-search-wp.duckdns.org](https://home-search-wp.duckdns.org/). Its VPS deployment is part of the shared [deployment setup](https://github.com/allanbantilan/clinic-wp/tree/main/deployment).
+
 ## Screenshots
 
 Screenshots show the included sample listings.
